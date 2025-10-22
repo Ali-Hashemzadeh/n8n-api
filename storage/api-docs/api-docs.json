@@ -16,7 +16,7 @@
                 ],
                 "summary": "Sign in",
                 "description": "Login with email and password",
-                "operationId": "b9b760991d94b179960cd7ddc93eedf2",
+                "operationId": "bae68d1c55329ecb6e41f48285840c8f",
                 "requestBody": {
                     "description": "User credentials",
                     "required": true,
@@ -78,7 +78,7 @@
                 ],
                 "summary": "Log out",
                 "description": "Logs out the current authenticated user by revoking their token",
-                "operationId": "b66dd8a7864f561822c01bc8339363fb",
+                "operationId": "c5cdd87fdbf9d0f95dede875bd023dec",
                 "responses": {
                     "200": {
                         "description": "Successfully logged out",
@@ -106,6 +106,375 @@
                     }
                 ]
             }
+        },
+        "/api/v1/permissions": {
+            "get": {
+                "tags": [
+                    "Roles & Permissions"
+                ],
+                "summary": "Get list of all permissions",
+                "description": "Display a listing of all available permissions.",
+                "operationId": "c8e60e1cdfb99866cdca9b2d3737f847",
+                "responses": {
+                    "200": {
+                        "description": "List of permissions"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/roles": {
+            "get": {
+                "tags": [
+                    "Roles & Permissions"
+                ],
+                "summary": "Get list of roles",
+                "description": "Display a listing of the roles.",
+                "operationId": "c1294bb85dfc016a8f9c0d3f0907293f",
+                "responses": {
+                    "200": {
+                        "description": "List of roles"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/roles/{id}": {
+            "get": {
+                "tags": [
+                    "Roles & Permissions"
+                ],
+                "summary": "Get a single role and its permissions",
+                "description": "Display the specified role and its permissions.",
+                "operationId": "9004c1b664a5ad189ceea42fb66f4adc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Role details"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/roles/{id}/permissions": {
+            "post": {
+                "tags": [
+                    "Roles & Permissions"
+                ],
+                "summary": "Assign a permission to a role",
+                "description": "Assign a permission to a role.",
+                "operationId": "bd68f015e6599c41e8afcadebd7b75c1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "permission_name"
+                                ],
+                                "properties": {
+                                    "permission_name": {
+                                        "type": "string",
+                                        "example": "manage-posts"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Permission assigned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Roles & Permissions"
+                ],
+                "summary": "Revoke a permission from a role",
+                "description": "Revoke (delete) a permission from a role.",
+                "operationId": "7686b3dd8b2384cca72cf95ea61ecce9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "permission_name"
+                                ],
+                                "properties": {
+                                    "permission_name": {
+                                        "type": "string",
+                                        "example": "manage-posts"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Permission revoked"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get list of users",
+                "description": "Display a listing of the users.",
+                "operationId": "12e989554c281d650dff75443acabf54",
+                "responses": {
+                    "200": {
+                        "description": "List of users"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a new user (and assign role/permissions)",
+                "description": "Store a newly created user in storage.",
+                "operationId": "64da9b5a20fa4f20e947ed61b2bbb6da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "New User"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "09123456789"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "Observer"
+                                    },
+                                    "permissions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "see-users"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get a single user",
+                "description": "Display the specified user.",
+                "operationId": "a9d321d5dc6bc2613c6cf5ba92b76c89",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update a user, their role, and permissions",
+                "description": "Update the specified user in storage.",
+                "operationId": "5bcda8371b3cb9f863a47620e636be9b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated User"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "Observer"
+                                    },
+                                    "permissions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "see-users"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -123,6 +492,14 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Roles & Permissions",
+            "description": "Roles & Permissions"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
         }
     ]
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             // Adds a 'mobile' column after the 'email' column
             // It's nullable() so existing users don't cause errors
             // It's unique() so no two users can have the same number
-            $table->string('mobile')->unique()->after('name');
+            $table->string('mobile')->nullable()->unique()->after('name');
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -28,7 +29,8 @@ class RolesAndPermissionsSeeder extends Seeder
         // Create Roles
         // ----------------------------------------------------
         $role1 = Role::create(['name' => 'Super-Admin']);
-        $role2 = Role::create(['name' => 'Observer']);
+        $role2 = Role::create(['name' => 'Admin']);
+        $role3 = Role::create(['name' => 'Observer']);
 
 
         // ----------------------------------------------------
@@ -37,9 +39,13 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Super-Admin gets all permissions
         $role1->givePermissionTo(Permission::all());
+        $role2->givePermissionTo('see-users');
 
         // Observer only gets 'see-users'
-        $role2->givePermissionTo('see-users');
+        $role3->givePermissionTo('see-users');
+
+        $user = User::where('email', 'ali.melmedas1383@gmail.com')->first();
+        $user->assignRole('Super-Admin');
 
     }
 }

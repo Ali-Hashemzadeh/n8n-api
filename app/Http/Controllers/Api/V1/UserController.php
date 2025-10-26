@@ -57,6 +57,7 @@ class UserController extends Controller
      * @OA\Property(property="name", type="string", example="New User"),
      * @OA\Property(property="email", type="string", format="email", example="user@example.com"),
      * @OA\Property(property="mobile", type="string", example="09123456789"),
+     * @OA\Property(property="company_id", type="integer", example="1"),
      * @OA\Property(property="password", type="string", format="password", example="password123"),
      * @OA\Property(property="password_confirmation", type="string", format="password", example="password123"),
      * @OA\Property(property="role", type="string", example="Observer"),
@@ -74,6 +75,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'mobile' => ['required', 'string', 'unique:'.User::class], // Make sure this matches your DB
+            'company_id' => ['required', 'integer', 'exists:App\Models\Company,id'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
             // Validation for roles and permissions
@@ -86,6 +88,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'mobile' => $request->mobile,
+            'company_id' => $request->company_id,
             'password' => Hash::make($request->password),
         ]);
 

@@ -24,6 +24,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'manage-perms']);
         Permission::create(['name' => 'manage-users']);
         Permission::create(['name' => 'see-users']);
+        Permission::create(['name' => 'manage-service-types']);
 
         // ----------------------------------------------------
         // Create Roles
@@ -40,6 +41,8 @@ class RolesAndPermissionsSeeder extends Seeder
         // Super-Admin gets all permissions
         $role1->givePermissionTo(Permission::all());
         $role2->givePermissionTo('see-users');
+        $role2->givePermissionTo('manage-service-types');
+        Permission::create(['name' => 'manage-companies']);
 
         // Observer only gets 'see-users'
         $role3->givePermissionTo('see-users');

@@ -38,7 +38,7 @@ class UserController extends Controller
     public function index()
     {
         // Use pagination and eager load roles
-        $users = User::with('roles')->paginate(15);
+        $users = User::with('roles')->with('company')->paginate(15);
 
         return UserResource::collection($users);
     }

@@ -1,66 +1,124 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+N8N AI Assistant - Admin API
+This is the official Laravel 11 backend API for the n8n AI Call Assistant. It is designed to store call reports (future) and handle the multi-tenant administration of client companies (e.g., clinics, barbershops), their users, and their services.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This API is built using a clean, service-oriented architecture and is secured with role-based access control.
 
-## About Laravel
+🚀 Key Features
+Authentication: Token-based API authentication using Laravel Sanctum.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Authorization: Role-Based Access Control (RBAC) via spatie/laravel-permission.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Roles: Super-Admin, Admin, Observer.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Architecture: Service-Oriented Architecture (Services, Policies, Form Requests, API Resources).
 
-## Learning Laravel
+Multi-Tenancy:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Full CRUD for Companies (Super-Admin only).
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Full CRUD for Service Types (scoped to a company).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+User Management:
 
-## Laravel Sponsors
+Full CRUD for Users.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Assign roles and a company_id to users.
 
-### Premium Partners
+API Documentation: Automatic OpenAPI (Swagger) documentation via l5-swagger.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+💻 Technology Stack
+Framework: Laravel 11
 
-## Contributing
+PHP: 8.2+
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Database: MySQL / MariaDB
 
-## Code of Conduct
+Authentication: Laravel Sanctum
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Authorization: spatie/laravel-permission
 
-## Security Vulnerabilities
+API Documentation: l5-swagger
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+🛠️ Local Installation & Setup
+Follow these steps to get the project running on your local machine.
 
-## License
+1. Clone the Repository
+   Bash
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+2. Install Dependencies
+   Bash
+
+composer install
+3. Environment Setup
+   Bash
+
+# Copy the example .env file
+cp .env.example .env
+
+# Generate your application key
+php artisan key:generate
+4. Configure Your Database
+   Open your .env file and set up your database credentials. The database name from your SQL file is n8n-laravel.
+
+Code snippet
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=n8n-laravel
+DB_USERNAME=root
+DB_PASSWORD=
+5. Run Migrations & Seeders
+   This is the most important step. The migrate:fresh command will build your database, and the --seed flag will run all seeders to create default permissions, roles, and the Super-Admin user.
+
+Bash
+
+php artisan migrate:fresh --seed
+🔑 Default Admin User
+After seeding the database, a Super-Admin user is created for you:
+
+Email: ali.melmedas1383@gmail.com
+
+Password: password
+
+You can use these credentials at the POST /api/v1/login endpoint to get your API token.
+
+🏃 Running the Application
+1. Start the Server
+   Bash
+
+php artisan serve
+By default, the API will be available at http://127.0.0.1:8000.
+
+2. Access the API
+   All API endpoints are prefixed with /api/v1.
+
+Base URL: http://127.0.0.1:8000/api/v1
+
+📖 API Documentation (Swagger)
+This project uses l5-swagger to generate API documentation from the controller annotations.
+
+1. Generate the Docs
+   Any time you update the @OA annotations, you must re-generate the documentation:
+
+Bash
+
+php artisan l5-swagger:generate
+2. View the Docs
+   Access the Swagger UI in your browser: http://127.0.0.1:8000/api/documentation
+
+🧪 Postman
+A Postman collection (n8n-api.postman_collection.json) is included in the root of this repository.
+
+You can import it directly into Postman. It is pre-configured with all available endpoints and uses collection variables for {{baseUrl}} and {{apiToken}} to make testing easy.
+
+🚓 Running Tests
+To run the application's feature tests (if any):
+
+Bash
+
+php artisan test
+📄 License
+This project is licensed under the MIT License.

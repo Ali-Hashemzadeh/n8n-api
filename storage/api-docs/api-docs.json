@@ -112,7 +112,7 @@
                 "tags": [
                     "Call Reports"
                 ],
-                "summary": "Intake a new call report from n8n",
+                "summary": "Submit a new call report (n8n only)",
                 "operationId": "a77a017d5e015cdabd2d68573b273906",
                 "requestBody": {
                     "description": "JSON payload from n8n",
@@ -120,6 +120,13 @@
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "company_id",
+                                    "profile",
+                                    "text",
+                                    "json",
+                                    "state"
+                                ],
                                 "properties": {
                                     "company_id": {
                                         "type": "integer",
@@ -129,11 +136,11 @@
                                         "properties": {
                                             "phone": {
                                                 "type": "string",
-                                                "example": "1234567890"
+                                                "example": "555-123-4567"
                                             },
                                             "name": {
                                                 "type": "string",
-                                                "example": "John"
+                                                "example": "Jane"
                                             },
                                             "lastname": {
                                                 "type": "string",
@@ -142,14 +149,14 @@
                                             "email": {
                                                 "type": "string",
                                                 "format": "email",
-                                                "example": "john.doe@example.com"
+                                                "example": "jane.doe@example.com"
                                             }
                                         },
                                         "type": "object"
                                     },
                                     "text": {
                                         "type": "string",
-                                        "example": "Customer confirmed appointment..."
+                                        "example": "Customer confirmed appointment."
                                     },
                                     "json": {
                                         "properties": {
@@ -163,16 +170,11 @@
                                                         },
                                                         "text": {
                                                             "type": "string",
-                                                            "example": "Hello, how can I help you?"
+                                                            "example": "Hello?"
                                                         }
                                                     },
                                                     "type": "object"
                                                 }
-                                            },
-                                            "confidence_score": {
-                                                "type": "number",
-                                                "format": "float",
-                                                "example": 0.98
                                             }
                                         },
                                         "type": "object"
@@ -181,11 +183,7 @@
                                         "properties": {
                                             "duration_seconds": {
                                                 "type": "integer",
-                                                "example": 124
-                                            },
-                                            "n8n_workflow_id": {
-                                                "type": "string",
-                                                "example": "workflow-abc-123"
+                                                "example": 120
                                             }
                                         },
                                         "type": "object"
@@ -196,8 +194,7 @@
                                             "confirmed",
                                             "failed",
                                             "unfinished"
-                                        ],
-                                        "example": "confirmed"
+                                        ]
                                     },
                                     "timestamp": {
                                         "type": "string",
@@ -225,7 +222,7 @@
                                             "properties": {
                                                 "id": {
                                                     "type": "integer",
-                                                    "example": 1
+                                                    "example": 123
                                                 }
                                             },
                                             "type": "object"
@@ -245,10 +242,227 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "n8nToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/call-reports": {
+            "get": {
+                "tags": [
+                    "Call Reports"
+                ],
+                "summary": "List all call reports (Super-Admin only)",
+                "operationId": "e33fcb457dd29d0b2d498d050d2bb6ed",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
                     },
                     {
-                        "n8nToken": []
+                        "name": "state",
+                        "in": "query",
+                        "description": "Filter by state",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "confirmed",
+                                "failed",
+                                "unfinished"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "description": "Filter by start date (YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-01-01"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "description": "Filter by end date (YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-01-31"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by customer phone/name/email or call summary",
+                        "schema": {
+                            "type": "string",
+                            "example": "555-123-4567"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A paginated list of call reports",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CallReportResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/companies/{company}/call-reports": {
+            "get": {
+                "tags": [
+                    "Call Reports"
+                ],
+                "summary": "List call reports for a specific company",
+                "operationId": "e2c5babe8b0498c2c83a83a3f6a8b559",
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "path",
+                        "description": "The ID of the company",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "confirmed",
+                                "failed",
+                                "unfinished"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-01-01"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-01-31"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "example": "555-123-4567"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A paginated list of call reports",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CallReportResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Company not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/call-reports/{call_report}": {
+            "get": {
+                "tags": [
+                    "Call Reports"
+                ],
+                "summary": "Show a single call report",
+                "operationId": "cb5bcf87196704f9cd45a519eb7dd544",
+                "parameters": [
+                    {
+                        "name": "call_report",
+                        "in": "path",
+                        "description": "The ID of the call report",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Call report details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CallReportResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Report not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -1124,6 +1338,68 @@
                 },
                 "type": "object"
             },
+            "CallReportResource": {
+                "title": "CallReportResource",
+                "description": "Call Report resource model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "summary": {
+                        "type": "string",
+                        "example": "Customer confirmed appointment..."
+                    },
+                    "conversation": {
+                        "description": "The call transcript and other JSON data.",
+                        "properties": {
+                            "transcript": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "speaker": {
+                                            "type": "string",
+                                            "example": "AI"
+                                        },
+                                        "text": {
+                                            "type": "string",
+                                            "example": "Hello, how can I help you?"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "metadata": {
+                        "description": "Flexible metadata about the call.",
+                        "properties": {
+                            "duration_seconds": {
+                                "type": "integer",
+                                "example": 124
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "state": {
+                        "type": "string",
+                        "example": "confirmed"
+                    },
+                    "called_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-11-05T12:30:00Z"
+                    },
+                    "company": {
+                        "$ref": "#/components/schemas/CompanyResource"
+                    },
+                    "customer": {
+                        "$ref": "#/components/schemas/CustomerResource"
+                    }
+                },
+                "type": "object"
+            },
             "CompanyResource": {
                 "title": "CompanyResource",
                 "description": "Company resource model",
@@ -1157,6 +1433,30 @@
                         "items": {
                             "$ref": "#/components/schemas/ServiceTypeResource"
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "CustomerResource": {
+                "title": "CustomerResource",
+                "description": "Customer resource model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "555-123-4567"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Jane Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "jane.doe@example.com"
                     }
                 },
                 "type": "object"
@@ -1232,6 +1532,12 @@
             }
         },
         "securitySchemes": {
+            "n8nToken": {
+                "type": "http",
+                "description": "Secret token for n8n service",
+                "bearerFormat": "Token",
+                "scheme": "bearer"
+            },
             "bearerAuth": {
                 "type": "http",
                 "name": "Authorization",

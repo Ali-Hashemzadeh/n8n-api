@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\CallReport;
 use App\Models\Company;
 use App\Models\ServiceType;
+use App\Policies\CallReportPolicy;
 use App\Policies\CompanyPolicy;
 use App\Policies\ServiceTypePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -18,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         ServiceType::class => ServiceTypePolicy::class,
         Company::class => CompanyPolicy::class,
+        CallReport::class => CallReportPolicy::class,
     ];
 
     /**

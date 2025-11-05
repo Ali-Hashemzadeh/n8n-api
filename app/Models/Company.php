@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany; // <-- ADD THIS
 
 class Company extends Model
 {
@@ -11,27 +12,29 @@ class Company extends Model
         'name'
     ];
 
-    /**
-     * Get all of the users for the company.
-     */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
-    /**
-     * Get all of the service types for the company.
-     */
     public function serviceTypes(): HasMany
     {
         return $this->hasMany(ServiceType::class);
     }
 
     /**
-     * Get all of the call reports for the company.
+     * All call reports this company has received.
      */
     public function callReports(): HasMany
     {
         return $this->hasMany(CallReport::class);
+    }
+
+    /**
+     * The customers that have interacted with this company.
+     */
+    public function customers(): BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class, 'customer_company');
     }
 }

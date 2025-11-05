@@ -107,6 +107,152 @@
                 ]
             }
         },
+        "/api/v1/call-reports/intake": {
+            "post": {
+                "tags": [
+                    "Call Reports"
+                ],
+                "summary": "Intake a new call report from n8n",
+                "operationId": "a77a017d5e015cdabd2d68573b273906",
+                "requestBody": {
+                    "description": "JSON payload from n8n",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "company_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "profile": {
+                                        "properties": {
+                                            "phone": {
+                                                "type": "string",
+                                                "example": "1234567890"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "John"
+                                            },
+                                            "lastname": {
+                                                "type": "string",
+                                                "example": "Doe"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "john.doe@example.com"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "text": {
+                                        "type": "string",
+                                        "example": "Customer confirmed appointment..."
+                                    },
+                                    "json": {
+                                        "properties": {
+                                            "transcript": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "speaker": {
+                                                            "type": "string",
+                                                            "example": "AI"
+                                                        },
+                                                        "text": {
+                                                            "type": "string",
+                                                            "example": "Hello, how can I help you?"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "confidence_score": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 0.98
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "meta": {
+                                        "properties": {
+                                            "duration_seconds": {
+                                                "type": "integer",
+                                                "example": 124
+                                            },
+                                            "n8n_workflow_id": {
+                                                "type": "string",
+                                                "example": "workflow-abc-123"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "enum": [
+                                            "confirmed",
+                                            "failed",
+                                            "unfinished"
+                                        ],
+                                        "example": "confirmed"
+                                    },
+                                    "timestamp": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-11-05T12:30:00Z"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Call report created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Call report created successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Invalid n8n token)"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    },
+                    {
+                        "n8nToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/companies": {
             "get": {
                 "tags": [
@@ -1096,6 +1242,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Call Reports",
+            "description": "Endpoints for managing and viewing call reports"
+        },
         {
             "name": "Companies",
             "description": "API Endpoints for managing companies (Super-Admin only)"

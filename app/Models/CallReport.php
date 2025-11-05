@@ -12,32 +12,30 @@ class CallReport extends Model
 
     /**
      * The attributes that are mass assignable.
-     * These are the "flattened" fields we'll use from the n8n data.
      *
      * @var array<int, string>
      */
     protected $fillable = [
         'company_id',
-        'customer_phone',
-        'customer_name',
-        'customer_lastname',
-        'customer_email',
+        'customer_id', // <-- ADD THIS
         'summary',
         'conversation',
         'metadata',
         'state',
-        'created_at', // We include this so we can set it manually from n8n's data
     ];
 
     /**
      * The attributes that should be cast.
      *
-     * @var array<string, string>
+     * @return array<string, string>
      */
-    protected $casts = [
-        'conversation' => 'array',
-        'metadata' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'conversation' => 'array',
+            'metadata' => 'array',
+        ];
+    }
 
     /**
      * Get the company that this call report belongs to.
@@ -45,5 +43,13 @@ class CallReport extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Get the customer that made this call.
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

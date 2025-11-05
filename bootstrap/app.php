@@ -32,7 +32,9 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'n8n.token' => \App\Http\Middleware\AuthenticateN8nToken::class,
+        ]);
     })
     ->withProviders([ // <-- ADD THIS BLOCK
         App\Providers\AuthServiceProvider::class,

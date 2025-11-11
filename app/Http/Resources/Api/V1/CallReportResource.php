@@ -62,6 +62,10 @@ class CallReportResource extends JsonResource
             // This is the correct way to include company and customer data
             'company' => new CompanyResource($this->whenLoaded('company')),
             'customer' => new CustomerResource($this->whenLoaded('customer')),
+
+            // --- THIS IS THE FIX ---
+            // Use ::collection() for a "many" relationship
+            'service_types' => ServiceTypeResource::collection($this->whenLoaded('serviceTypes')),
         ];
     }
 }

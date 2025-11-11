@@ -55,6 +55,10 @@ class CallReportService
                 'state' => $data['state'],
             ]);
 
+            if (!empty($data['service_type_ids'])) {
+                $callReport->serviceTypes()->attach($data['service_type_ids']);
+            }
+
             // 4. Set the timestamp (if n8n provided one)
             if (!empty($data['timestamp'])) {
                 $callReport->created_at = Carbon::parse($data['timestamp']);
@@ -78,7 +82,7 @@ class CallReportService
         $user = Auth::user();
 
         // Start the query, always loading relationships
-        $query = CallReport::query()->with(['customer', 'company']);
+        $query = CallReport::query()->with(['customer', 'company', 'serviceTypes']);
 
         // --- FILTERING ---
         // 1. Scope by Company (if provided)

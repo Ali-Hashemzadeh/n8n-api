@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCallReportRequest extends FormRequest
 {
@@ -34,6 +35,15 @@ class StoreCallReportRequest extends FormRequest
             'meta' => ['nullable', 'array'],
             'state' => ['required', 'string', 'in:confirmed,failed,unfinished'],
             'timestamp' => ['nullable', 'date'], // n8n can send its own timestamp
+            // --- ADD THESE NEW RULES ---
+            'service_type_ids' => ['nullable', 'array'],
+            'service_type_ids.*' => [
+                'integer',
+                // This rule ensures the service_type_id exists...
+                Rule::exists('service_types', 'id')
+                    // ...and that it belongs to the company_id from the request.
+                    ->where('company_id', $this->company_id),
+            ],
         ];
     }
 }

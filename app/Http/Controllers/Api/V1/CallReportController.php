@@ -50,7 +50,7 @@ class CallReportController extends Controller
     /**
      * @OA\Post(
      * path="/api/v1/call-reports/intake",
-     * summary="Submit a new call report (n8n only)",
+     * summary="Submit a new call report (n8n)",
      * tags={"Call Reports"},
      * security={{"n8nToken":{}}},
      * @OA\RequestBody(
@@ -59,40 +59,54 @@ class CallReportController extends Controller
      * @OA\JsonContent(
      * required={"company_id", "profile", "text", "json", "state"},
      * @OA\Property(property="company_id", type="integer", example=1),
-     * @OA\Property(property="profile", type="object",
+     * @OA\Property(
+     * property="profile",
+     * type="object",
      * @OA\Property(property="phone", type="string", example="555-123-4567"),
      * @OA\Property(property="name", type="string", example="Jane"),
      * @OA\Property(property="lastname", type="string", example="Doe"),
-     * @OA\Property(property="email", type="string", format="email", example="jane.doe@example.com")
+     * @OA\Property(property="email", type="string", format="email", example="jane@example.com")
      * ),
-     * @OA\Property(property="text", type="string", example="Customer confirmed appointment."),
-     * @OA\Property(property="json", type="object",
-     * @OA\Property(property="transcript", type="array",
-     * @OA\Items(type="object",
+     * @OA\Property(property="text", type="string", example="Customer confirmed appointment..."),
+     * @OA\Property(
+     * property="json",
+     * type="object",
+     * @OA\Property(
+     * property="transcript",
+     * type="array",
+     * @OA\Items(
+     * type="object",
      * @OA\Property(property="speaker", type="string", example="AI"),
-     * @OA\Property(property="text", type="string", example="Hello?")
+     * @OA\Property(property="text", type="string", example="Hello, how can I help?")
      * )
      * )
      * ),
-     * @OA\Property(property="meta", type="object",
-     * @OA\Property(property="duration_seconds", type="integer", example=120)
+     * @OA\Property(
+     * property="meta",
+     * type="object",
+     * @OA\Property(property="duration_seconds", type="integer", example=60)
      * ),
-     * @OA\Property(property="state", type="string", enum={"confirmed", "failed", "unfinished"}),
-     * @OA\Property(property="timestamp", type="string", format="date-time", example="2025-11-05T12:30:00Z")
+     * @OA\Property(property="state", type="string", enum={"confirmed", "failed", "unfinished"}, example="confirmed"),
+     * @OA\Property(property="timestamp", type="string", format="date-time", example="2025-11-05T18:30:00Z"),
+     * @OA\Property(
+     * property="service_type_ids",
+     * type="array",
+     * @OA\Items(type="integer"),
+     * example={1, 2}
+     * )
      * )
      * ),
      * @OA\Response(
      * response=201,
-     * description="Call report created successfully",
+     * description="Report created successfully",
      * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Call report created successfully."),
-     * @OA\Property(property="data", type="object",
-     * @OA\Property(property="id", type="integer", example=123)
-     * )
+     * @OA\Property(property="message", type="string", example="Call report created."),
+     * @OA\Property(property="data", type="object", @OA\Property(property="id", type="integer", example=123))
      * )
      * ),
      * @OA\Response(response=401, description="Unauthorized (Invalid n8n token)"),
-     * @OA\Response(response=422, description="Validation error")
+     * @OA\Response(response=422, description="Validation error"),
+     * @OA\Response(response=500, description="Server misconfigured (n8n token not set in .env)")
      * )
      */
     public function intake(StoreCallReportRequest $request): JsonResponse
@@ -225,11 +239,11 @@ class CallReportController extends Controller
      */
     public function show(CallReport $callReport): CallReportResource
     {
-        // Check if user is authorized to view this specific report
+        // Check if user is authorized to view this report
         $this->authorize('view', $callReport);
 
-        // Load the relationships for the resource
-        $callReport->load(['customer', 'company']);
+        // Eager-load the relationships for the single response
+        $callReport->load(['customer', 'company', 'serviceTypes']); // <-- ADD 'serviceTypes'
 
         return new CallReportResource($callReport);
     }

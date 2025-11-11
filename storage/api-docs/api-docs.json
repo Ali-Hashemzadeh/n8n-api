@@ -112,7 +112,7 @@
                 "tags": [
                     "Call Reports"
                 ],
-                "summary": "Submit a new call report (n8n only)",
+                "summary": "Submit a new call report (n8n)",
                 "operationId": "a77a017d5e015cdabd2d68573b273906",
                 "requestBody": {
                     "description": "JSON payload from n8n",
@@ -149,14 +149,14 @@
                                             "email": {
                                                 "type": "string",
                                                 "format": "email",
-                                                "example": "jane.doe@example.com"
+                                                "example": "jane@example.com"
                                             }
                                         },
                                         "type": "object"
                                     },
                                     "text": {
                                         "type": "string",
-                                        "example": "Customer confirmed appointment."
+                                        "example": "Customer confirmed appointment..."
                                     },
                                     "json": {
                                         "properties": {
@@ -170,7 +170,7 @@
                                                         },
                                                         "text": {
                                                             "type": "string",
-                                                            "example": "Hello?"
+                                                            "example": "Hello, how can I help?"
                                                         }
                                                     },
                                                     "type": "object"
@@ -183,7 +183,7 @@
                                         "properties": {
                                             "duration_seconds": {
                                                 "type": "integer",
-                                                "example": 120
+                                                "example": 60
                                             }
                                         },
                                         "type": "object"
@@ -194,12 +194,23 @@
                                             "confirmed",
                                             "failed",
                                             "unfinished"
-                                        ]
+                                        ],
+                                        "example": "confirmed"
                                     },
                                     "timestamp": {
                                         "type": "string",
                                         "format": "date-time",
-                                        "example": "2025-11-05T12:30:00Z"
+                                        "example": "2025-11-05T18:30:00Z"
+                                    },
+                                    "service_type_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -209,14 +220,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Call report created successfully",
+                        "description": "Report created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Call report created successfully."
+                                            "example": "Call report created."
                                         },
                                         "data": {
                                             "properties": {
@@ -238,6 +249,9 @@
                     },
                     "422": {
                         "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server misconfigured (n8n token not set in .env)"
                     }
                 },
                 "security": [

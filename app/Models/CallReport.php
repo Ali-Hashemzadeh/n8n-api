@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class CallReport extends Model
 {
@@ -51,5 +52,10 @@ class CallReport extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function serviceTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(ServiceType::class, 'call_report_service_type');
     }
 }

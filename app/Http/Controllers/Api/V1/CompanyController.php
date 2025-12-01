@@ -126,6 +126,7 @@ class CompanyController extends Controller
 
         // Optional: Load relationships if you want them
         // $company->load('users', 'serviceTypes');
+        $company->load('customers');
 
         // Return the resource
         return new CompanyResource($company);

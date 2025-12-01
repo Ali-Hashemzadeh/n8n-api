@@ -45,6 +45,10 @@ class CompanyResource extends JsonResource
             'service_types' => ServiceTypeResource::collection(
                 $this->whenLoaded('serviceTypes')
             ),
+
+            'customers' => CustomerResource::collection(
+                $this->whenLoaded('customers')
+            )
         ];
     }
 }

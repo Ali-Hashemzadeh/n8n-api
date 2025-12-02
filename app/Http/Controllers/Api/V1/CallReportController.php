@@ -207,7 +207,7 @@ class CallReportController extends Controller
     public function indexForCompany(Request $request, Company $company): AnonymousResourceCollection
     {
         // Check if user is authorized to see reports for THIS company
-        $this->authorize('viewAnyForCompany', [CallReport::class, $company]);
+        $this->authorize('see-call-reports', [CallReport::class, $company]);
 
         // Get filterable reports, scoped to the company
         $reports = $this->callReportService->getReports($request->all(), $company);

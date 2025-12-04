@@ -121,10 +121,16 @@ class CallReportService
             });
         }
 
+        if (!empty($filters['per_page'])) {
+            $perPage = $filters['per_page'];
+        } else {
+            $perPage = 15;
+        }
+
         // Order by the most recent call first
         $query->latest();
 
         // Return paginated results
-        return $query->paginate(15)->withQueryString();
+        return $query->paginate($perPage)->withQueryString();
     }
 }

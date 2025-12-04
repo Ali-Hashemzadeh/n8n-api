@@ -134,6 +134,12 @@ class CallReportController extends Controller
      * description="Page number for pagination",
      * @OA\Schema(type="integer", example=1)
      * ),
+     *  @OA\Parameter(
+     *  name="per_page",
+     *  in="query",
+     *  description="number of call reports per page",
+     *  @OA\Schema(type="integer", example=15)
+     *  ),
      * @OA\Parameter(
      * name="state",
      * in="query",
@@ -190,6 +196,12 @@ class CallReportController extends Controller
      * description="The ID of the company",
      * @OA\Schema(type="integer")
      * ),
+     *   @OA\Parameter(
+     *   name="per_page",
+     *   in="query",
+     *   description="number of call reports per page",
+     *   @OA\Schema(type="integer", example=15)
+     *   ),
      * @OA\Parameter(name="page", in="query", @OA\Schema(type="integer", example=1)),
      * @OA\Parameter(name="state", in="query", @OA\Schema(type="string", enum={"confirmed", "failed", "unfinished"})),
      * @OA\Parameter(name="date_from", in="query", @OA\Schema(type="string", format="date", example="2025-01-01")),
